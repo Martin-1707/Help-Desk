@@ -12,27 +12,27 @@ public class SolicitudSoporte {
         @GeneratedValue(strategy = GenerationType.IDENTITY)
         private Long id;
 
-        @Column(nullable = false, length = 200)
+        @Column(name = "Titulo", nullable = false, length = 200)
         private String titulo;
 
-        @Column(nullable = false, length = 2000)
+        @Column(name = "Descripcion", nullable = false, length = 2000)
         private String descripcion;
 
         @Enumerated(EnumType.STRING)
-        @Column(nullable = false, length = 20)
+        @Column(name = "Prioridad", nullable = false, length = 20)
         private Prioridad prioridad;
 
         @Enumerated(EnumType.STRING)
-        @Column(nullable = false, length = 20)
+        @Column(name = "Estado", nullable = false, length = 20)
         private Estado estado;
 
-        @Column(nullable = false, length = 120)
+        @Column(name = "Solicitante", nullable = false, length = 120)
         private String solicitante;
 
-        @Column(nullable = false)
+        @Column(name = "FechaCreacion", nullable = false)
         private OffsetDateTime fechaCreacion;
 
-        @Column(nullable = false)
+        @Column(name = "FechaActualizacion", nullable = false)
         private OffsetDateTime fechaActualizacion;
 
         @PrePersist

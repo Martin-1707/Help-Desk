@@ -9,9 +9,10 @@ import java.time.OffsetDateTime;
 import java.util.List;
 
 public interface ISolicitudService {
-    List<SolicitudSoporte> search(Estado estado, Prioridad prioridad, String titulo, OffsetDateTime desde, OffsetDateTime hasta);
-    SolicitudSoporte getById(Long id);
+    // CRUD básico
     SolicitudSoporte create(SolicitudCreateUpdateDTO dto);
     SolicitudSoporte update(Long id, SolicitudCreateUpdateDTO dto);
     SolicitudSoporte changeEstado(Long id, Estado nuevoEstado);
+    SolicitudSoporte getById(Long id);
+    List<SolicitudSoporte> search(Estado estado, Prioridad prioridad, String titulo, OffsetDateTime desde, OffsetDateTime hasta);
 }
