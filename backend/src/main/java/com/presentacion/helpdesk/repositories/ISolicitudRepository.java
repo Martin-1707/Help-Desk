@@ -19,9 +19,9 @@ public interface ISolicitudRepository extends JpaRepository<SolicitudSoporte, Lo
    WHERE (:estado IS NULL OR Estado = :estado)
      AND (:prioridad IS NULL OR Prioridad = :prioridad)
      AND (:titulo IS NULL OR LOWER(Titulo) LIKE LOWER(CONCAT('%', :titulo, '%')))
-     AND (:desde IS NULL OR FechaCreacion >= :desde)
-     AND (:hasta IS NULL OR FechaCreacion <= :hasta)
-   ORDER BY FechaCreacion DESC
+     AND (:desde IS NULL OR fecha_actualizacion >= :desde)
+     AND (:hasta IS NULL OR fecha_creacion <= :hasta)
+   ORDER BY fecha_creacion DESC
 """, nativeQuery = true)
     List<SolicitudSoporte> search(
             @Param("estado") Estado estado,

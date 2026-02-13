@@ -12,27 +12,28 @@ public class SolicitudSoporte {
         @GeneratedValue(strategy = GenerationType.IDENTITY)
         private Long id;
 
-        @Column(name = "Titulo", nullable = false, length = 200)
+        @Column(name = "titulo", nullable = false, length = 200)
         private String titulo;
 
-        @Column(name = "Descripcion", nullable = false, length = 2000)
+        @Column(name = "descripcion", nullable = false, length = 2000)
         private String descripcion;
 
         @Enumerated(EnumType.STRING)
-        @Column(name = "Prioridad", nullable = false, length = 20)
+        @Column(name = "prioridad", nullable = false, length = 20)
         private Prioridad prioridad;
 
         @Enumerated(EnumType.STRING)
-        @Column(name = "Estado", nullable = false, length = 20)
+        @Column(name = "estado", nullable = false, length = 20)
         private Estado estado;
 
-        @Column(name = "Solicitante", nullable = false, length = 120)
-        private String solicitante;
+        @ManyToOne(fetch = FetchType.LAZY)
+        @JoinColumn(name = "solicitante_id", nullable = false)
+        private Usuario solicitanteUser;
 
-        @Column(name = "FechaCreacion", nullable = false)
+        @Column(name = "fecha_creacion", nullable = false)
         private OffsetDateTime fechaCreacion;
 
-        @Column(name = "FechaActualizacion", nullable = false)
+        @Column(name = "fecha_actualizacion", nullable = false)
         private OffsetDateTime fechaActualizacion;
 
         @PrePersist
@@ -51,13 +52,13 @@ public class SolicitudSoporte {
         public SolicitudSoporte() {
         }
 
-        public SolicitudSoporte(Long id, String titulo, String descripcion, Prioridad prioridad, Estado estado, String solicitante, OffsetDateTime fechaCreacion, OffsetDateTime fechaActualizacion) {
+        public SolicitudSoporte(Long id, String titulo, String descripcion, Prioridad prioridad, Estado estado, Usuario solicitanteUser, OffsetDateTime fechaCreacion, OffsetDateTime fechaActualizacion) {
                 this.id = id;
                 this.titulo = titulo;
                 this.descripcion = descripcion;
                 this.prioridad = prioridad;
                 this.estado = estado;
-                this.solicitante = solicitante;
+                this.solicitanteUser = solicitanteUser;
                 this.fechaCreacion = fechaCreacion;
                 this.fechaActualizacion = fechaActualizacion;
         }
@@ -78,8 +79,8 @@ public class SolicitudSoporte {
         public Estado getEstado() { return estado; }
         public void setEstado(Estado estado) { this.estado = estado; }
 
-        public String getSolicitante() { return solicitante; }
-        public void setSolicitante(String solicitante) { this.solicitante = solicitante; }
+        public Usuario getSolicitanteUser() { return solicitanteUser; }
+        public void setSolicitanteUser(Usuario solicitanteUser) { this.solicitanteUser = solicitanteUser;}
 
         public OffsetDateTime getFechaCreacion() { return fechaCreacion; }
         public void setFechaCreacion(OffsetDateTime fechaCreacion) { this.fechaCreacion = fechaCreacion; }

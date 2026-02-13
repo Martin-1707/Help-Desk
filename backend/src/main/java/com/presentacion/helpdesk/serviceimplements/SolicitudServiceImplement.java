@@ -4,9 +4,12 @@ import com.presentacion.helpdesk.dtos.SolicitudCreateUpdateDTO;
 import com.presentacion.helpdesk.entities.Estado;
 import com.presentacion.helpdesk.entities.Prioridad;
 import com.presentacion.helpdesk.entities.SolicitudSoporte;
+import com.presentacion.helpdesk.entities.Usuario;
 import com.presentacion.helpdesk.repositories.ISolicitudRepository;
+import com.presentacion.helpdesk.repositories.IUsuarioRepository;
 import com.presentacion.helpdesk.serviceinterfaces.ISolicitudService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.OffsetDateTime;
@@ -17,18 +20,23 @@ public class SolicitudServiceImplement implements ISolicitudService {
     @Autowired
     private ISolicitudRepository soliRepo;
 
+    @Autowired
+    private IUsuarioRepository usuarioRepo;
+
     @Override
     public SolicitudSoporte create(SolicitudCreateUpdateDTO dto) {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        Usuario u = usuarioRepo.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado: " + username));
+
         SolicitudSoporte s = new SolicitudSoporte();
         s.setTitulo(dto.getTitulo());
         s.setDescripcion(dto.getDescripcion());
         s.setPrioridad(dto.getPrioridad());
-        s.setSolicitante(dto.getSolicitante());
-
-        // regla: al crear siempre NUEVO
+        s.setSolicitanteUser(u);
         s.setEstado(Estado.NUEVO);
 
-        // fechas se setean solas por @PrePersist (tu entity)
         return soliRepo.save(s);
     }
 
@@ -37,7 +45,6 @@ public class SolicitudServiceImplement implements ISolicitudService {
         SolicitudSoporte s = soliRepo.findById(id)
                 .orElseThrow(() -> new RuntimeException("Solicitud no encontrada con id: " + id));
 
-        // Regla: si está CERRADO, no editar
         if (s.getEstado() == Estado.CERRADO) {
             throw new RuntimeException("No se puede editar una solicitud en estado CERRADO.");
         }
@@ -45,7 +52,6 @@ public class SolicitudServiceImplement implements ISolicitudService {
         s.setTitulo(dto.getTitulo());
         s.setDescripcion(dto.getDescripcion());
         s.setPrioridad(dto.getPrioridad());
-        s.setSolicitante(dto.getSolicitante());
 
         return soliRepo.save(s);
     }

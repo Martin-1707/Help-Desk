@@ -18,10 +18,6 @@ public class SolicitudCreateUpdateDTO {
     @NotNull(message = "La prioridad es obligatoria.")
     private Prioridad prioridad;
 
-    @NotBlank(message = "El solicitante es obligatorio.")
-    @Size(min = 3, max = 120, message = "El solicitante debe tener entre 3 y 120 caracteres.")
-    private String solicitante;
-
     public String getTitulo() { return titulo; }
     public void setTitulo(String titulo) { this.titulo = titulo; }
 
@@ -31,6 +27,4 @@ public class SolicitudCreateUpdateDTO {
     public Prioridad getPrioridad() { return prioridad; }
     public void setPrioridad(Prioridad prioridad) { this.prioridad = prioridad; }
 
-    public String getSolicitante() { return solicitante; }
-    public void setSolicitante(String solicitante) { this.solicitante = solicitante; }
 }
