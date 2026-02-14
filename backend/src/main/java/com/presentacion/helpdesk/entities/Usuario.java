@@ -14,8 +14,8 @@ public class Usuario {
     @Column(nullable = false, unique = true, length = 100)
     private String username;
 
-    @Column(name="password_hash", nullable = false, length = 255)
-    private String passwordHash;
+    @Column(name="password", nullable = false, length = 255)
+    private String password;
 
     @Column(nullable = false)
     private boolean enabled = true;
@@ -27,10 +27,10 @@ public class Usuario {
     public Usuario() {
     }
 
-    public Usuario(Long id, String username, String passwordHash, boolean enabled, Rol rol) {
+    public Usuario(Long id, String username, String password, boolean enabled, Rol rol) {
         this.id = id;
         this.username = username;
-        this.passwordHash = passwordHash;
+        this.password = password;
         this.enabled = enabled;
         this.rol = rol;
     }
@@ -51,12 +51,12 @@ public class Usuario {
         this.username = username;
     }
 
-    public String getPasswordHash() {
-        return passwordHash;
+    public String getPassword() {
+        return password;
     }
 
-    public void setPasswordHash(String passwordHash) {
-        this.passwordHash = passwordHash;
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public boolean isEnabled() {

@@ -13,16 +13,16 @@ import java.util.List;
 
 @Repository
 public interface ISolicitudRepository extends JpaRepository<SolicitudSoporte, Long> {
-    @Query(value = """
-   SELECT *
-   FROM SolicitudSoporte
-   WHERE (:estado IS NULL OR Estado = :estado)
-     AND (:prioridad IS NULL OR Prioridad = :prioridad)
-     AND (:titulo IS NULL OR LOWER(Titulo) LIKE LOWER(CONCAT('%', :titulo, '%')))
-     AND (:desde IS NULL OR fecha_actualizacion >= :desde)
-     AND (:hasta IS NULL OR fecha_creacion <= :hasta)
-   ORDER BY fecha_creacion DESC
-""", nativeQuery = true)
+    @Query("""
+  SELECT s
+  FROM SolicitudSoporte s
+  WHERE (:estado IS NULL OR s.estado = :estado)
+    AND (:prioridad IS NULL OR s.prioridad = :prioridad)
+    AND (:titulo IS NULL OR LOWER(s.titulo) LIKE LOWER(CONCAT('%', :titulo, '%')))
+    AND (:desde IS NULL OR s.fechaActualizacion >= :desde)
+    AND (:hasta IS NULL OR s.fechaCreacion <= :hasta)
+  ORDER BY s.fechaCreacion DESC
+""")
     List<SolicitudSoporte> search(
             @Param("estado") Estado estado,
             @Param("prioridad") Prioridad prioridad,
@@ -30,4 +30,5 @@ public interface ISolicitudRepository extends JpaRepository<SolicitudSoporte, Lo
             @Param("desde") OffsetDateTime desde,
             @Param("hasta") OffsetDateTime hasta
     );
+
 }
