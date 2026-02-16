@@ -34,7 +34,7 @@ jobs:
           API_BASE: ${{ vars.API_BASE }}
           API_DOM: ${{ vars.API_DOM }}
         run: |
-          cat > frontend/src/environments/environment.prod.ts <<EOF
+          cat > frontend/src/environments/environment.exam.ts <<EOF
           export const environment = {
             production: true,
             base: "${API_BASE}",
@@ -87,6 +87,7 @@ jobs:
         with:
           azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_JOLLY_SMOKE_0803E980F }}
           action: "close"
+
 
 
 
