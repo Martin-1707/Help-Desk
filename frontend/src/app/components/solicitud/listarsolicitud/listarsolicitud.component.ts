@@ -90,12 +90,12 @@ export class ListarsolicitudComponent implements OnInit {
     });
 
     this.form.valueChanges.pipe(
-      startWith(this.form.getRawValue()),    
-      debounceTime(350),                      
-      map(v => this.buildFiltros(v)),         
+      startWith(this.form.getRawValue()),
+      debounceTime(350),
+      map(v => this.buildFiltros(v)),
       distinctUntilChanged((a, b) => JSON.stringify(a) === JSON.stringify(b)),
       switchMap((filtros) => {
-        this.currentPage.set(1);             
+        this.currentPage.set(1);
         this.isLoading = true;
 
         return this.solicitudService.list(filtros).pipe(
@@ -168,5 +168,14 @@ export class ListarsolicitudComponent implements OnInit {
   editar(id: number) { this.router.navigate(['/solicitudes', id, 'editar']); }
 
   verHorario(): void {
+    this.horarioService.list().subscribe({
+      next: (data) => {
+        console.log('Horario de atención:', data);
+        alert('Horario de atención:\n' + JSON.stringify(data, null, 2));
+      },
+      error: () => {
+        alert('❌ Error al obtener el horario de atención');
+      }
+    });
   }
 }
