@@ -5,7 +5,7 @@ import { routes } from './app.routes';
 import { provideClientHydration } from '@angular/platform-browser';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
-import { environment } from '../environments/evironment.exam';
+import { environment } from '../environments/environment.exam';
 import { provideNativeDateAdapter } from '@angular/material/core';
 
 import { JwtModule } from '@auth0/angular-jwt';

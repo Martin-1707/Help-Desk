@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { JwtRequest } from '../models/jwt-request.model';
-import { environment } from '../../environments/evironment.exam';
+import { environment } from '../../environments/environment.exam';
 
 @Injectable({
   providedIn: 'root'

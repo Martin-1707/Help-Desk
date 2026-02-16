@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { environment } from '../../environments/evironment.exam';
+import { environment } from '../../environments/environment.exam';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { UsuarioPick } from '../models/usuario-pick.model';

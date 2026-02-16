@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Estado } from '../models/estado';
 import { Prioridad } from '../models/prioridad';
-import { environment } from '../../environments/evironment.exam';
+import { environment } from '../../environments/environment.exam';
 import { Subject } from 'rxjs';
 import { SolicitudSoporte } from '../models/solicitud-soporte.model';
 import { HttpClient, HttpParams } from '@angular/common/http';
