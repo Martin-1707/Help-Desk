@@ -21,6 +21,8 @@ import { SolicitudSoporte } from '../../../models/solicitud-soporte.model';
 
 import { of, debounceTime, distinctUntilChanged, startWith, switchMap, map, catchError, finalize } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { HorarioService } from '../../../services/horario.service';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 type EstadoFiltro = Estado | 'TODOS';
 type PrioridadFiltro = Prioridad | 'TODAS';
@@ -41,6 +43,7 @@ type PrioridadFiltro = Prioridad | 'TODAS';
     MatTableModule,
     MatProgressSpinnerModule,
     MatTooltipModule,
+    MatSnackBarModule
   ],
   templateUrl: './listarsolicitud.component.html',
   styleUrl: './listarsolicitud.component.css'
@@ -73,7 +76,8 @@ export class ListarsolicitudComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private solicitudService: SolicitudService,
-    private router: Router
+    private router: Router,
+    private horarioService: HorarioService,
   ) { }
 
   ngOnInit(): void {
@@ -163,4 +167,6 @@ export class ListarsolicitudComponent implements OnInit {
 
   editar(id: number) { this.router.navigate(['/solicitudes', id, 'editar']); }
 
+  verHorario(): void {
+xxxxx  }
 }
