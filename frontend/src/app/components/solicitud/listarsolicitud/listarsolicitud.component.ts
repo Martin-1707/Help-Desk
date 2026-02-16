@@ -168,5 +168,5 @@ export class ListarsolicitudComponent implements OnInit {
   editar(id: number) { this.router.navigate(['/solicitudes', id, 'editar']); }
 
   verHorario(): void {
-xxxxx  }
+  }
 }
