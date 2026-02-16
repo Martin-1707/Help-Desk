@@ -42,9 +42,12 @@ jobs:
           };
           EOF
 
-      - name: Install dependencies
+      - name: Install dependencies (with optional deps)
         working-directory: frontend
-        run: npm ci
+        run: |
+        npm cache clean --force
+        npm ci --include=optional --no-audit
+
 
       - name: Build
         working-directory: frontend
@@ -71,3 +74,4 @@ jobs:
         with:
           azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_JOLLY_SMOKE_0803E980F }}
           action: "close"
+
