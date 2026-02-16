@@ -13,6 +13,7 @@ public interface ISolicitudService {
     SolicitudSoporte create(SolicitudCreateUpdateDTO dto);
     SolicitudSoporte update(Long id, SolicitudCreateUpdateDTO dto);
     SolicitudSoporte changeEstado(Long id, Estado nuevoEstado);
+    SolicitudSoporte delete(Long id);
     SolicitudSoporte getById(Long id);
     List<SolicitudSoporte> search(Estado estado, Prioridad prioridad, String titulo, OffsetDateTime desde, OffsetDateTime hasta);
 }

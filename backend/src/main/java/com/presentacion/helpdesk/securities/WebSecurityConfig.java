@@ -36,25 +36,21 @@ public class WebSecurityConfig {
     @Qualifier("handlerExceptionResolver")
     private HandlerExceptionResolver exceptionResolver;
 
-    // Configuración del AuthenticationManager
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
     }
 
-    // Codificador de contraseñas
     @Bean
     public static PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
-    // Configuración de autenticación con UserDetailsService
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(jwtUserDetailsService).passwordEncoder(passwordEncoder());
     }
 
-    // Configuración de seguridad HTTP
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
 

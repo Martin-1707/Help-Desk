@@ -1,1 +1,119 @@
-<p>creareditarsolicitud works!</p>
+<div class="page">
+  <div class="breadcrumb">
+    <span>Solicitudes</span>
+    <mat-icon class="crumb-sep">chevron_right</mat-icon>
+    <span class="crumb-current">{{ modoEdicion ? 'Editar' : 'Crear' }}</span>
+  </div>
+
+  <div class="header">
+    <div>
+      <h1>{{ modoEdicion ? 'Editar Solicitud' : 'Nueva Solicitud' }}</h1>
+      <p class="muted">Completa el formulario para {{ modoEdicion ? 'actualizar' : 'crear' }} una solicitud</p>
+    </div>
+  </div>
+
+  <mat-card class="card elevation-1">
+    <mat-card-header class="card-header">
+      <mat-icon class="icon-primary">description</mat-icon>
+      <div class="card-title-wrap">
+        <div class="card-title">Datos de la Solicitud</div>
+        <div class="card-subtitle">Los campos marcados con <b>*</b> son obligatorios</div>
+      </div>
+    </mat-card-header>
+
+    <mat-card-content>
+      <div class="loading" *ngIf="isLoading">
+        <mat-progress-spinner mode="indeterminate" diameter="38"></mat-progress-spinner>
+      </div>
+
+      <form class="form" [formGroup]="form" (ngSubmit)="guardar()">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Título *</mat-label>
+          <input matInput formControlName="titulo" placeholder="Ej: Error en módulo de reportes" />
+          <mat-hint align="start">Mínimo 5 caracteres</mat-hint>
+          <mat-hint align="end">{{ form.get('titulo')?.value?.length || 0 }}/200</mat-hint>
+
+          <mat-error *ngIf="form.get('titulo')?.hasError('required')">El título es obligatorio.</mat-error>
+          <mat-error *ngIf="form.get('titulo')?.hasError('minlength')">Debe tener al menos 5 caracteres.</mat-error>
+          <mat-error *ngIf="form.get('titulo')?.hasError('maxlength')">Máximo 200 caracteres.</mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Descripción *</mat-label>
+          <textarea
+            matInput
+            rows="5"
+            formControlName="descripcion"
+            placeholder="Describe detalladamente el problema o solicitud..."
+          ></textarea>
+
+          <mat-hint align="start">Mínimo 10 caracteres</mat-hint>
+          <mat-hint align="end">{{ form.get('descripcion')?.value?.length || 0 }}/2000</mat-hint>
+
+          <mat-error *ngIf="form.get('descripcion')?.hasError('required')">La descripción es obligatoria.</mat-error>
+          <mat-error *ngIf="form.get('descripcion')?.hasError('minlength')">Debe tener al menos 10 caracteres.</mat-error>
+          <mat-error *ngIf="form.get('descripcion')?.hasError('maxlength')">Máximo 2000 caracteres.</mat-error>
+        </mat-form-field>
+
+        <div class="grid-3">
+          <mat-form-field appearance="outline">
+            <mat-label>Prioridad *</mat-label>
+            <mat-select formControlName="prioridad">
+              <mat-option *ngFor="let p of prioridades" [value]="p">{{ prioridadLabel(p) }}</mat-option>
+            </mat-select>
+            <mat-error *ngIf="form.get('prioridad')?.hasError('required')">La prioridad es obligatoria.</mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Estado *</mat-label>
+            <mat-select formControlName="estado">
+              <mat-option *ngFor="let e of estados" [value]="e">{{ estadoLabel(e) }}</mat-option>
+            </mat-select>
+
+            <mat-hint *ngIf="!modoEdicion">Por defecto: Nuevo</mat-hint>
+            <mat-hint *ngIf="modoEdicion && form.get('estado')?.disabled">No editable (Cerrado)</mat-hint>
+          </mat-form-field>
+
+          <ng-container *ngIf="!esOperador || modoEdicion; else solicitanteSelect">
+            <mat-form-field appearance="outline">
+              <mat-label>Solicitante *</mat-label>
+              <input matInput formControlName="solicitanteUsername" />
+
+              <mat-hint *ngIf="!esOperador">Se asigna automáticamente (usuario logeado)</mat-hint>
+
+            </mat-form-field>
+          </ng-container>
+
+          <ng-template #solicitanteSelect>
+            <mat-form-field appearance="outline">
+              <mat-label>Solicitante *</mat-label>
+              <mat-select formControlName="solicitanteId">
+                <mat-option *ngFor="let u of usuariosRolUsuario" [value]="u.id">
+                  {{ u.nombres }}
+                </mat-option>
+              </mat-select>
+
+              <mat-error *ngIf="form.get('solicitanteId')?.hasError('required')">
+                El solicitante es obligatorio.
+              </mat-error>
+            </mat-form-field>
+          </ng-template>
+        </div>
+
+        <mat-divider class="divider"></mat-divider>
+
+        <div class="actions">
+          <button mat-flat-button color="primary" type="submit" [disabled]="form.invalid || isLoading">
+            <mat-icon>save</mat-icon>
+            {{ modoEdicion ? 'Guardar Cambios' : 'Crear Solicitud' }}
+          </button>
+
+          <button mat-stroked-button type="button" (click)="cancelar()" [disabled]="isLoading">
+            <mat-icon>arrow_back</mat-icon>
+            Cancelar
+          </button>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+</div>

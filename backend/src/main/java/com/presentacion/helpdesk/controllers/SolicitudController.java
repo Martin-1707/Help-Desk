@@ -50,7 +50,7 @@ public class SolicitudController {
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
-    // EDITAR (no cambia estado)
+    // EDITAR
     @PutMapping("/{id}")
     public ResponseEntity<SolicitudSoporte> update(
             @PathVariable Long id,
@@ -66,5 +66,12 @@ public class SolicitudController {
             @Valid @RequestBody CambiarEstadoDTO dto
     ) {
         return ResponseEntity.ok(solicitudService.changeEstado(id, dto.getEstado()));
+    }
+
+    // ELIMINAR
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        solicitudService.delete(id);
+        return ResponseEntity.noContent().build();
     }
 }

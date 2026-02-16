@@ -1,0 +1,121 @@
+<div class="page" *ngIf="solicitud as s">
+  <div class="breadcrumb">
+    <span>Solicitudes</span>
+    <mat-icon class="crumb-sep">chevron_right</mat-icon>
+    <span class="crumb-current">Detalle</span>
+  </div>
+
+  <div class="header">
+    <div>
+      <div class="id-row">
+        <span class="muted">{{ codigoLabel }}</span>
+
+        <mat-chip-set>
+          <mat-chip>{{ estadoLabel(s.estado) }}</mat-chip>
+          <mat-chip>{{ prioridadLabel(s.prioridad) }}</mat-chip>
+        </mat-chip-set>
+      </div>
+
+      <h1>{{ s.titulo }}</h1>
+      <p class="muted">Información de la solicitud</p>
+    </div>
+
+    <div class="header-actions">
+      <button mat-stroked-button type="button" (click)="volver()">
+        <mat-icon>arrow_back</mat-icon>
+        Volver
+      </button>
+
+      <button mat-flat-button color="primary" type="button" (click)="editar()">
+        <mat-icon>edit</mat-icon>
+        Editar
+      </button>
+    </div>
+  </div>
+
+  <mat-card class="card elevation-1">
+    <mat-card-header class="card-header">
+      <mat-icon class="icon-primary">description</mat-icon>
+      <div class="card-title-wrap">
+        <div class="card-title">Información de la Solicitud</div>
+      </div>
+    </mat-card-header>
+
+    <mat-card-content>
+      <h3>Descripción</h3>
+      <div class="desc-box">{{ descripcionLabel }}</div>
+
+      <mat-divider class="divider"></mat-divider>
+
+      <div class="grid-2">
+        <div>
+          <div class="muted">Solicitante</div>
+          <div>{{ solicitanteLabel }}</div>
+        </div>
+
+        <div>
+          <div class="muted">Prioridad</div>
+          <div>{{ prioridadLabel(s.prioridad) }}</div>
+        </div>
+
+        <div>
+          <div class="muted">Fecha de Creación</div>
+          <div>{{ fechaCreacionValue | date:'dd/MM/yyyy HH:mm' }}</div>
+        </div>
+
+        <div>
+          <div class="muted">Última Actualización</div>
+          <div>{{ fechaActualizacionValue | date:'dd/MM/yyyy HH:mm' }}</div>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card class="card elevation-1">
+    <mat-card-header class="card-header">
+      <div class="card-title-wrap">
+        <div class="card-title">Cambiar Estado</div>
+        <div class="card-subtitle">Actualiza el estado de la solicitud</div>
+      </div>
+    </mat-card-header>
+
+    <mat-card-content>
+      <div class="alert" *ngIf="esCerrado">
+        <mat-icon>info</mat-icon>
+        <div>
+          <b>Esta solicitud está cerrada.</b> No puede reabrirse.
+        </div>
+      </div>
+
+      <div class="alert info" *ngIf="!esCerrado && !esOperador">
+        <mat-icon>info</mat-icon>
+        <div>
+          Solo <b>Operador</b> puede cambiar a <b>Resuelto</b> o <b>Cerrado</b>.
+        </div>
+      </div>
+
+      <form class="row" [formGroup]="formEstado" (ngSubmit)="guardarEstado()">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Nuevo Estado</mat-label>
+          <mat-select formControlName="estado" [disabled]="esCerrado">
+            <mat-option *ngFor="let e of estados" [value]="e" [disabled]="opcionEstadoDeshabilitada(e)">
+              {{ estadoLabel(e) }}
+              <span *ngIf="!esOperador && (e === Estado.RESUELTO || e === Estado.CERRADO)">
+                (Solo Operador)
+              </span>
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <button mat-flat-button color="primary" type="submit"
+                [disabled]="isLoading || esCerrado || formEstado.invalid || formEstado.value.estado === s.estado">
+          Guardar Estado
+        </button>
+      </form>
+    </mat-card-content>
+  </mat-card>
+</div>
+
+<div class="loading" *ngIf="isLoading && !solicitud">
+  <mat-progress-spinner mode="indeterminate" diameter="42"></mat-progress-spinner>
+</div>

@@ -1,7 +1,6 @@
 import { inject } from '@angular/core';
-import { ActivatedRouteSnapshot, CanActivateFn, RouterStateSnapshot } from '@angular/router';
+import { ActivatedRouteSnapshot, CanActivateFn, Router, RouterStateSnapshot } from '@angular/router';
 import { LoginService } from '../services/login.service';
-import { Router } from 'express';
 
 export const seguridadGuard = (
   route: ActivatedRouteSnapshot,
@@ -10,20 +9,18 @@ export const seguridadGuard = (
   const loginService = inject(LoginService);
   const router = inject(Router);
 
-  // 1) ¿Hay sesión?
-  const isAuthenticated = loginService.verificar(); // token existe y (ideal) no expiró
+  const isAuthenticated = loginService.verificar(); 
   if (!isAuthenticated) {
     router.navigate(['/login'], { queryParams: { returnUrl: state.url } });
     return false;
   }
 
-  // 2) Roles (opcional)
   const allowedRoles = (route.data['roles'] as string[] | undefined) ?? [];
-  if (allowedRoles.length === 0) return true; // si no defines roles en la ruta, deja pasar
+  if (allowedRoles.length === 0) return true;
 
-  const userRole = loginService.showRole(); // ej: 'ADMIN' | 'OPERADOR' (según tu caso)
+  const userRole = loginService.showRole();
   if (!userRole || !allowedRoles.includes(userRole)) {
-    router.navigate(['/solicitudes']); // o '/unauthorized'
+    router.navigate(['/solicitudes']);
     return false;
   }
 

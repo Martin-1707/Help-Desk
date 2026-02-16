@@ -17,6 +17,9 @@ public class Usuario {
     @Column(name="password", nullable = false, length = 255)
     private String password;
 
+    @Column(nullable = false, length = 120)
+    private String nombres;
+
     @Column(nullable = false)
     private boolean enabled = true;
 
@@ -27,10 +30,11 @@ public class Usuario {
     public Usuario() {
     }
 
-    public Usuario(Long id, String username, String password, boolean enabled, Rol rol) {
+    public Usuario(Long id, String username, String password, String nombres, boolean enabled, Rol rol) {
         this.id = id;
         this.username = username;
         this.password = password;
+        this.nombres = nombres;
         this.enabled = enabled;
         this.rol = rol;
     }
@@ -57,6 +61,14 @@ public class Usuario {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getNombres() {
+        return nombres;
+    }
+
+    public void setNombres(String nombres) {
+        this.nombres = nombres;
     }
 
     public boolean isEnabled() {

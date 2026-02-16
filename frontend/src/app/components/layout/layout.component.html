@@ -1,1 +1,15 @@
-<p>layout works!</p>
+<app-topbar
+  [sidebarOpen]="sidebarOpen"
+  (toggleSidebar)="sidebarOpen = !sidebarOpen"
+  (logout)="onLogout()">
+</app-topbar>
+
+<app-sidenav
+  [sidebarOpen]="sidebarOpen"
+  [isMobile]="isMobile"
+  (close)="sidebarOpen = false">
+</app-sidenav>
+
+<main class="content" [class.with-sidenav]="sidebarOpen && !isMobile">
+  <router-outlet></router-outlet>
+</main>

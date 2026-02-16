@@ -1,0 +1,91 @@
+.page {
+  padding: 24px;
+  max-width: 1120px;
+}
+
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: rgba(0,0,0,.60);
+  font-size: 13px;
+  margin-bottom: 10px;
+}
+.crumb-sep { font-size: 18px; opacity: .6; }
+.crumb-current { color: rgba(0,0,0,.85); font-weight: 600; }
+
+.header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+.header h1 {
+  margin: 0;
+  font-size: 34px;
+  line-height: 1.1;
+  font-weight: 700;
+}
+.muted {
+  margin: 6px 0 0;
+  color: rgba(0,0,0,.60);
+}
+
+.card { border-radius: 12px; position: relative; }
+.card-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-bottom: 6px;
+}
+.icon-primary {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  display: grid;
+  place-items: center;
+  background: rgba(25,118,210,.12);
+  color: #1976d2;
+}
+.card-title-wrap { display: flex; flex-direction: column; gap: 2px; }
+.card-title { font-weight: 700; font-size: 16px; }
+.card-subtitle { font-size: 13px; color: rgba(0,0,0,.60); }
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: 10px;
+}
+.w-100 { width: 100%; }
+
+.grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+}
+@media (max-width: 900px) {
+  .grid-3 { grid-template-columns: 1fr; }
+}
+
+.divider { margin: 8px 0 2px; }
+
+.actions {
+  display: flex;
+  gap: 10px;
+  padding-top: 6px;
+}
+@media (max-width: 600px) {
+  .actions { flex-direction: column; }
+  .actions button { width: 100%; justify-content: center; }
+}
+
+.loading {
+  position: absolute;
+  inset: 0;
+  background: rgba(255,255,255,.65);
+  display: grid;
+  place-items: center;
+  z-index: 5;
+  border-radius: 12px;
+}

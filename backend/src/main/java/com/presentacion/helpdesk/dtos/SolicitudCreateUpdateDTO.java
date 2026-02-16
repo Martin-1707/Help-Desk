@@ -18,6 +18,8 @@ public class SolicitudCreateUpdateDTO {
     @NotNull(message = "La prioridad es obligatoria.")
     private Prioridad prioridad;
 
+    private Long solicitanteId;
+
     public String getTitulo() { return titulo; }
     public void setTitulo(String titulo) { this.titulo = titulo; }
 
@@ -26,5 +28,8 @@ public class SolicitudCreateUpdateDTO {
 
     public Prioridad getPrioridad() { return prioridad; }
     public void setPrioridad(Prioridad prioridad) { this.prioridad = prioridad; }
+
+    public Long getSolicitanteId() { return solicitanteId; }
+    public void setSolicitanteId(Long solicitanteId) { this.solicitanteId = solicitanteId; }
 
 }

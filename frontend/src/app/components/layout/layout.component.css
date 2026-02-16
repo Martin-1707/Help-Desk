@@ -1,0 +1,24 @@
+:host{
+  display:block;
+}
+
+:host{
+  --topbar-h: 64px;
+  --sidenav-w: 260px;
+}
+
+.content{
+  padding: 18px;
+  transition: margin-left .2s ease;
+  min-height: calc(100vh - var(--topbar-h));
+}
+
+.content.with-sidenav{
+  margin-left: var(--sidenav-w);
+}
+
+@media (max-width: 768px){
+  .content.with-sidenav{
+    margin-left: 0;
+  }
+}

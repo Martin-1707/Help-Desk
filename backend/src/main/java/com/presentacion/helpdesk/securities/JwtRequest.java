@@ -8,12 +8,10 @@ public class JwtRequest implements Serializable {
     private String username;
     private String password;
 
-    // Constructor vacío (obligatorio para serialización)
     public JwtRequest() {
         super();
     }
 
-    // Constructor con parámetros
     public JwtRequest(String username, String password) {
         super();
         this.username = username;

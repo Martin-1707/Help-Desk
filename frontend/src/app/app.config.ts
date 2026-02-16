@@ -11,7 +11,7 @@ import { provideNativeDateAdapter } from '@angular/material/core';
 import { JwtModule } from '@auth0/angular-jwt';
 
 export function tokenGetter() {
-  return sessionStorage.getItem('token'); // o localStorage, según uses
+  return sessionStorage.getItem('token'); 
 }
 
 export const appConfig: ApplicationConfig = {
@@ -27,16 +27,14 @@ export const appConfig: ApplicationConfig = {
       config: {
         tokenGetter,
 
-        // ✅ Tu backend (sin http/https)
-        allowedDomains: [environment.dom], // ej: "localhost:8087"
+        allowedDomains: [environment.dom],
 
-        // ✅ Endpoints donde NO se debe mandar token
         disallowedRoutes: [
           `${environment.base}/login`,
           `${environment.base}/actuator/health`,
         ],
       },
     })
-  ),
+  ), provideAnimationsAsync(),
   ],
 };

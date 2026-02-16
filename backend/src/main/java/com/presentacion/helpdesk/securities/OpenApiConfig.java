@@ -13,9 +13,9 @@ public class OpenApiConfig {
     public OpenAPI customOpenAPI() {
         return new OpenAPI()
                 .info(new Info()
-                        .title("API de Gestión de Ventas")
+                        .title("API de Gestión de tickets")
                         .version("1.0")
-                        .description("Documentación de la API con OpenAPI 3 y Swagger"))
+                        .description("Documentación de la API con OpenAPI y Swagger"))
                 .addSecurityItem(new SecurityRequirement().addList("bearerAuth"))
                 .components(new io.swagger.v3.oas.models.Components()
                         .addSecuritySchemes("bearerAuth",

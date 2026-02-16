@@ -5,6 +5,8 @@ import com.presentacion.helpdesk.entities.Estado;
 import com.presentacion.helpdesk.entities.Prioridad;
 import com.presentacion.helpdesk.entities.SolicitudSoporte;
 import com.presentacion.helpdesk.entities.Usuario;
+import com.presentacion.helpdesk.exceptions.BusinessRuleException;
+import com.presentacion.helpdesk.exceptions.NotFoundException;
 import com.presentacion.helpdesk.repositories.ISolicitudRepository;
 import com.presentacion.helpdesk.repositories.IUsuarioRepository;
 import com.presentacion.helpdesk.serviceinterfaces.ISolicitudService;
@@ -27,14 +29,40 @@ public class SolicitudServiceImplement implements ISolicitudService {
     public SolicitudSoporte create(SolicitudCreateUpdateDTO dto) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
 
-        Usuario u = usuarioRepo.findByUsername(username)
+        Usuario auth = usuarioRepo.findWithRolByUsername(username)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado: " + username));
+
+        String rol = auth.getRol().getNombre(); // "USUARIO" o "OPERADOR"
+
+        Usuario solicitanteFinal;
+
+        if ("USUARIO".equalsIgnoreCase(rol)) {
+            solicitanteFinal = auth;
+
+        } else if ("OPERADOR".equalsIgnoreCase(rol)) {
+            if (dto.getSolicitanteId() == null) {
+                throw new RuntimeException("Como OPERADOR debes indicar solicitanteId.");
+            }
+
+            Usuario seleccionado = usuarioRepo.findById(dto.getSolicitanteId())
+                    .orElseThrow(() -> new RuntimeException("Solicitante no encontrado con id: " + dto.getSolicitanteId()));
+
+            String rolSel = seleccionado.getRol().getNombre();
+            if (!"USUARIO".equalsIgnoreCase(rolSel)) {
+                throw new RuntimeException("El solicitante seleccionado debe tener rol USUARIO.");
+            }
+
+            solicitanteFinal = seleccionado;
+
+        } else {
+            throw new RuntimeException("Rol no permitido para crear solicitudes: " + rol);
+        }
 
         SolicitudSoporte s = new SolicitudSoporte();
         s.setTitulo(dto.getTitulo());
         s.setDescripcion(dto.getDescripcion());
         s.setPrioridad(dto.getPrioridad());
-        s.setSolicitanteUser(u);
+        s.setSolicitanteUser(solicitanteFinal);
         s.setEstado(Estado.NUEVO);
 
         return soliRepo.save(s);
@@ -68,6 +96,19 @@ public class SolicitudServiceImplement implements ISolicitudService {
 
         s.setEstado(nuevoEstado);
         return soliRepo.save(s);
+    }
+
+    @Override
+    public SolicitudSoporte delete(Long id) {
+        SolicitudSoporte s = soliRepo.findById(id)
+                .orElseThrow(() -> new NotFoundException("Solicitud no encontrada con id: " + id));
+
+        if (s.getEstado() == Estado.CERRADO) {
+            throw new BusinessRuleException("No se puede eliminar una solicitud en estado CERRADO.");
+        }
+
+        soliRepo.delete(s);
+        return s;
     }
 
     @Override

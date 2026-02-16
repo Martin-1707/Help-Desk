@@ -1,0 +1,52 @@
+.sidenav{
+  position: fixed;
+  top: 64px;
+  left: 0;
+  bottom: 0;
+  width: 256px;
+  background: #fff;
+  border-right: 1px solid rgba(0,0,0,.08);
+  transition: width .25s ease;
+  overflow: hidden;
+  z-index: 40;
+}
+
+.sidenav.closed{
+  width: 0;
+  border-right: none;
+}
+
+.nav{
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.nav-item{
+  justify-content: flex-start;
+  border-radius: 10px;
+  height: 44px;
+  width: 100%;
+}
+
+.nav-icon{
+  margin-right: 12px;
+}
+
+.nav-item.active{
+  background: #1976d2;
+  color: #fff;
+}
+
+.nav-item.active .nav-icon{
+  color: #fff;
+}
+
+.overlay{
+  position: fixed;
+  inset: 0;
+  top: 64px;
+  background: rgba(0,0,0,.45);
+  z-index: 30;
+}
