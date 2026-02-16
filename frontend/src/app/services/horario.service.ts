@@ -11,7 +11,7 @@ const base_url = environment.base;
 })
 export class HorarioService {
 
-  private url = `${base_url}/solicitudes`;
+  private url = `${base_url}/horarios`;
   private listaCambio = new Subject<Horario[]>();
 
   constructor(private http: HttpClient) { }
