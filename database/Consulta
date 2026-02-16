@@ -1,0 +1,37 @@
+Solicitud del Repositorio Backend
+
+@Query("""
+  SELECT s
+  FROM SolicitudSoporte s
+  WHERE (:estado IS NULL OR s.estado = :estado)
+    AND (:prioridad IS NULL OR s.prioridad = :prioridad)
+    AND (:titulo IS NULL OR LOWER(s.titulo) LIKE LOWER(CONCAT('%', :titulo, '%')))
+    AND (:desde IS NULL OR s.fechaActualizacion >= :desde)
+    AND (:hasta IS NULL OR s.fechaCreacion <= :hasta)
+  ORDER BY s.fechaCreacion DESC
+""")
+List<SolicitudSoporte> search(
+        @Param("estado") Estado estado,
+        @Param("prioridad") Prioridad prioridad,
+        @Param("titulo") String titulo,
+        @Param("desde") OffsetDateTime desde,
+        @Param("hasta") OffsetDateTime hasta
+);
+
+Interpretación SQL equivalente
+
+DECLARE @estado    VARCHAR(20) = NULL;   -- Ej: 'NUEVO', 'EN_PROCESO', 'RESUELTO', 'CERRADO'
+DECLARE @prioridad VARCHAR(20) = NULL;   -- Ej: 'BAJA', 'MEDIA', 'ALTA'
+DECLARE @titulo    VARCHAR(200) = NULL;  -- Ej: 'error'
+DECLARE @desde     DATETIMEOFFSET = NULL;
+DECLARE @hasta     DATETIMEOFFSET = NULL;
+
+SELECT
+    s.*
+FROM dbo.solicitud_soporte s
+WHERE (@estado IS NULL OR s.estado = @estado)
+  AND (@prioridad IS NULL OR s.prioridad = @prioridad)
+  AND (@titulo IS NULL OR LOWER(s.titulo) LIKE '%' + LOWER(@titulo) + '%')
+  AND (@desde IS NULL OR s.fecha_actualizacion >= @desde)
+  AND (@hasta IS NULL OR s.fecha_creacion <= @hasta)
+ORDER BY s.fecha_creacion DESC;

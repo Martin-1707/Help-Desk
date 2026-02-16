@@ -1,0 +1,157 @@
+/* =========================================================
+   2) SEED - DATOS INICIALES (Roles, Usuarios, 10+ Solicitudes)
+   ========================================================= */
+
+BEGIN TRAN;
+
+-- Roles
+IF NOT EXISTS (SELECT 1 FROM dbo.rol WHERE nombre='ADMIN')    INSERT INTO dbo.rol(nombre) VALUES ('ADMIN');
+IF NOT EXISTS (SELECT 1 FROM dbo.rol WHERE nombre='OPERADOR') INSERT INTO dbo.rol(nombre) VALUES ('OPERADOR');
+IF NOT EXISTS (SELECT 1 FROM dbo.rol WHERE nombre='USUARIO')  INSERT INTO dbo.rol(nombre) VALUES ('USUARIO');
+
+DECLARE @rolAdmin BIGINT = (SELECT TOP 1 id FROM dbo.rol WHERE nombre='ADMIN');
+DECLARE @rolOper  BIGINT = (SELECT TOP 1 id FROM dbo.rol WHERE nombre='OPERADOR');
+DECLARE @rolUser  BIGINT = (SELECT TOP 1 id FROM dbo.rol WHERE nombre='USUARIO');
+
+-- Password bcrypt (cámbialo si deseas)
+DECLARE @hash VARCHAR(255) = '$2a$12$S/KpdM1tMyA1YBr5dQd3wO1y4ywXI0dY4i76l7KK2OAd6/Q3BbfXi';
+
+-- Usuarios
+IF NOT EXISTS (SELECT 1 FROM dbo.usuario WHERE username='admin1')
+  INSERT INTO dbo.usuario(enabled, nombres, username, password, rol_id)
+  VALUES (1, 'Admin Principal', 'admin1', @hash, @rolAdmin);
+
+IF NOT EXISTS (SELECT 1 FROM dbo.usuario WHERE username='operador1')
+  INSERT INTO dbo.usuario(enabled, nombres, username, password, rol_id)
+  VALUES (1, 'Carlos Operador', 'operador1', @hash, @rolOper);
+
+IF NOT EXISTS (SELECT 1 FROM dbo.usuario WHERE username='usuario1')
+  INSERT INTO dbo.usuario(enabled, nombres, username, password, rol_id)
+  VALUES (1, 'María González', 'usuario1', @hash, @rolUser);
+
+IF NOT EXISTS (SELECT 1 FROM dbo.usuario WHERE username='usuario2')
+  INSERT INTO dbo.usuario(enabled, nombres, username, password, rol_id)
+  VALUES (1, 'María Torres', 'usuario2', @hash, @rolUser);
+
+DECLARE @usuario1 BIGINT = (SELECT TOP 1 id FROM dbo.usuario WHERE username='usuario1');
+DECLARE @usuario2 BIGINT = (SELECT TOP 1 id FROM dbo.usuario WHERE username='usuario2');
+
+/* 10+ Solicitudes (distribuidas en estados/prioridades) */
+-- Para evitar duplicados: condicion por titulo + solicitante_id
+
+IF NOT EXISTS (SELECT 1 FROM dbo.solicitud_soporte WHERE titulo='Error al iniciar sesión' AND solicitante_id=@usuario1)
+INSERT INTO dbo.solicitud_soporte
+(titulo, descripcion, prioridad, estado, fecha_creacion, fecha_actualizacion, solicitante_id)
+VALUES
+('Error al iniciar sesión',
+ 'Al iniciar sesión, el sistema devuelve 401 aunque las credenciales son correctas.',
+ 'ALTA','NUEVO',
+ DATEADD(HOUR,-10,SYSDATETIMEOFFSET()), DATEADD(HOUR,-10,SYSDATETIMEOFFSET()),
+ @usuario1);
+
+IF NOT EXISTS (SELECT 1 FROM dbo.solicitud_soporte WHERE titulo='No genera PDF en módulo de reportes' AND solicitante_id=@usuario2)
+INSERT INTO dbo.solicitud_soporte
+(titulo, descripcion, prioridad, estado, fecha_creacion, fecha_actualizacion, solicitante_id)
+VALUES
+('No genera PDF en módulo de reportes',
+ 'Al exportar el reporte mensual a PDF, devuelve error 500.',
+ 'ALTA','EN_PROCESO',
+ DATEADD(DAY,-2,SYSDATETIMEOFFSET()), DATEADD(HOUR,-2,SYSDATETIMEOFFSET()),
+ @usuario2);
+
+IF NOT EXISTS (SELECT 1 FROM dbo.solicitud_soporte WHERE titulo='Solicitud de acceso a módulo de reportes' AND solicitante_id=@usuario2)
+INSERT INTO dbo.solicitud_soporte
+(titulo, descripcion, prioridad, estado, fecha_creacion, fecha_actualizacion, solicitante_id)
+VALUES
+('Solicitud de acceso a módulo de reportes',
+ 'Necesito acceso al módulo de reportes para revisar indicadores del área.',
+ 'MEDIA','NUEVO',
+ DATEADD(DAY,-1,SYSDATETIMEOFFSET()), SYSDATETIMEOFFSET(),
+ @usuario2);
+
+IF NOT EXISTS (SELECT 1 FROM dbo.solicitud_soporte WHERE titulo='Lentitud al listar solicitudes' AND solicitante_id=@usuario1)
+INSERT INTO dbo.solicitud_soporte
+(titulo, descripcion, prioridad, estado, fecha_creacion, fecha_actualizacion, solicitante_id)
+VALUES
+('Lentitud al listar solicitudes',
+ 'La tabla demora mucho en cargar cuando hay más de 50 registros.',
+ 'BAJA','NUEVO',
+ DATEADD(DAY,-5,SYSDATETIMEOFFSET()), DATEADD(DAY,-5,SYSDATETIMEOFFSET()),
+ @usuario1);
+
+IF NOT EXISTS (SELECT 1 FROM dbo.solicitud_soporte WHERE titulo='Error al guardar cambios en solicitud' AND solicitante_id=@usuario1)
+INSERT INTO dbo.solicitud_soporte
+(titulo, descripcion, prioridad, estado, fecha_creacion, fecha_actualizacion, solicitante_id)
+VALUES
+('Error al guardar cambios en solicitud',
+ 'Al guardar cambios, el botón queda cargando y no muestra confirmación.',
+ 'MEDIA','RESUELTO',
+ DATEADD(DAY,-6,SYSDATETIMEOFFSET()), DATEADD(DAY,-5,SYSDATETIMEOFFSET()),
+ @usuario1);
+
+IF NOT EXISTS (SELECT 1 FROM dbo.solicitud_soporte WHERE titulo='Pantalla en blanco al ingresar a Solicitudes' AND solicitante_id=@usuario2)
+INSERT INTO dbo.solicitud_soporte
+(titulo, descripcion, prioridad, estado, fecha_creacion, fecha_actualizacion, solicitante_id)
+VALUES
+('Pantalla en blanco al ingresar a Solicitudes',
+ 'Al entrar al módulo, se queda en blanco. Ocurre intermitente.',
+ 'ALTA','EN_PROCESO',
+ DATEADD(DAY,-3,SYSDATETIMEOFFSET()), DATEADD(DAY,-2,SYSDATETIMEOFFSET()),
+ @usuario2);
+
+IF NOT EXISTS (SELECT 1 FROM dbo.solicitud_soporte WHERE titulo='No carga combo de Prioridad' AND solicitante_id=@usuario1)
+INSERT INTO dbo.solicitud_soporte
+(titulo, descripcion, prioridad, estado, fecha_creacion, fecha_actualizacion, solicitante_id)
+VALUES
+('No carga combo de Prioridad',
+ 'El selector de prioridad no muestra opciones al crear una solicitud.',
+ 'MEDIA','NUEVO',
+ DATEADD(HOUR,-30,SYSDATETIMEOFFSET()), DATEADD(HOUR,-30,SYSDATETIMEOFFSET()),
+ @usuario1);
+
+IF NOT EXISTS (SELECT 1 FROM dbo.solicitud_soporte WHERE titulo='Campos obligatorios no validan' AND solicitante_id=@usuario2)
+INSERT INTO dbo.solicitud_soporte
+(titulo, descripcion, prioridad, estado, fecha_creacion, fecha_actualizacion, solicitante_id)
+VALUES
+('Campos obligatorios no validan',
+ 'Se puede enviar formulario sin título, debería validar requerido.',
+ 'MEDIA','RESUELTO',
+ DATEADD(DAY,-8,SYSDATETIMEOFFSET()), DATEADD(DAY,-7,SYSDATETIMEOFFSET()),
+ @usuario2);
+
+IF NOT EXISTS (SELECT 1 FROM dbo.solicitud_soporte WHERE titulo='Error 403 al cambiar estado' AND solicitante_id=@usuario1)
+INSERT INTO dbo.solicitud_soporte
+(titulo, descripcion, prioridad, estado, fecha_creacion, fecha_actualizacion, solicitante_id)
+VALUES
+('Error 403 al cambiar estado',
+ 'Operador intenta cambiar estado y recibe 403.',
+ 'ALTA','CERRADO',
+ DATEADD(DAY,-12,SYSDATETIMEOFFSET()), DATEADD(DAY,-11,SYSDATETIMEOFFSET()),
+ @usuario1);
+
+IF NOT EXISTS (SELECT 1 FROM dbo.solicitud_soporte WHERE titulo='Solicitud duplicada en listado' AND solicitante_id=@usuario2)
+INSERT INTO dbo.solicitud_soporte
+(titulo, descripcion, prioridad, estado, fecha_creacion, fecha_actualizacion, solicitante_id)
+VALUES
+('Solicitud duplicada en listado',
+ 'Aparece duplicada luego de refrescar. Posible issue de paginación.',
+ 'BAJA','EN_PROCESO',
+ DATEADD(DAY,-4,SYSDATETIMEOFFSET()), DATEADD(DAY,-4,SYSDATETIMEOFFSET()),
+ @usuario2);
+
+IF NOT EXISTS (SELECT 1 FROM dbo.solicitud_soporte WHERE titulo='No funciona búsqueda por título' AND solicitante_id=@usuario1)
+INSERT INTO dbo.solicitud_soporte
+(titulo, descripcion, prioridad, estado, fecha_creacion, fecha_actualizacion, solicitante_id)
+VALUES
+('No funciona búsqueda por título',
+ 'El filtro de búsqueda no retorna resultados aunque exista coincidencia.',
+ 'MEDIA','NUEVO',
+ DATEADD(DAY,-9,SYSDATETIMEOFFSET()), DATEADD(DAY,-9,SYSDATETIMEOFFSET()),
+ @usuario1);
+
+COMMIT;
+
+-- Verificación rápida
+SELECT COUNT(*) AS total_roles FROM dbo.rol;
+SELECT COUNT(*) AS total_usuarios FROM dbo.usuario;
+SELECT COUNT(*) AS total_solicitudes FROM dbo.solicitud_soporte;

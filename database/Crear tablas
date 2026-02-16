@@ -1,0 +1,36 @@
+/* =========================================================
+   1) DDL - TABLAS (Azure SQL / MS SQL)
+   ========================================================= */
+
+IF OBJECT_ID('dbo.solicitud_soporte', 'U') IS NOT NULL DROP TABLE dbo.solicitud_soporte;
+IF OBJECT_ID('dbo.usuario', 'U') IS NOT NULL DROP TABLE dbo.usuario;
+IF OBJECT_ID('dbo.rol', 'U') IS NOT NULL DROP TABLE dbo.rol;
+
+CREATE TABLE dbo.rol (
+    id     BIGINT IDENTITY(1,1) PRIMARY KEY,
+    nombre VARCHAR(50) NOT NULL UNIQUE
+);
+
+CREATE TABLE dbo.usuario (
+    id       BIGINT IDENTITY(1,1) PRIMARY KEY,
+    enabled  BIT NOT NULL,
+    nombres  VARCHAR(120) NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    username VARCHAR(100) NOT NULL UNIQUE,
+    rol_id   BIGINT NOT NULL,
+    CONSTRAINT FK_usuario_rol FOREIGN KEY (rol_id) REFERENCES dbo.rol(id)
+);
+
+CREATE TABLE dbo.solicitud_soporte (
+    id                  BIGINT IDENTITY(1,1) PRIMARY KEY,
+    titulo              VARCHAR(200)  NOT NULL,
+    descripcion         VARCHAR(2000) NOT NULL,
+    prioridad           VARCHAR(20)   NOT NULL,
+    estado              VARCHAR(20)   NOT NULL,
+    fecha_creacion      DATETIMEOFFSET NOT NULL,
+    fecha_actualizacion DATETIMEOFFSET NOT NULL,
+    solicitante_id      BIGINT NOT NULL,
+    CONSTRAINT FK_solicitud_usuario FOREIGN KEY (solicitante_id) REFERENCES dbo.usuario(id),
+    CONSTRAINT CK_solicitud_estado CHECK (estado IN ('NUEVO','EN_PROCESO','RESUELTO','CERRADO')),
+    CONSTRAINT CK_solicitud_prioridad CHECK (prioridad IN ('BAJA','MEDIA','ALTA'))
+);
