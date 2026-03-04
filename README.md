@@ -58,9 +58,9 @@ autenticación con JWT, filtros por estado y prioridad, y validaciones.
 ## Raíz del repositorio
 
 
-•   README.md (este archivo)
+•   README.md
 
-•   catalog-info.yaml (descriptor para Backstage)
+•   catalog-info.yaml
 
 •   backend/
 
@@ -186,27 +186,21 @@ Nota: El backend puede usar otro puerto mediante la variable de entorno PORT.
 
 ## 6.1 Creación de estructura (automática)
 
-## El esquema/tablas se crean automáticamente al levantar el backend, ya que está
-
-configurado con JPA (ddl-auto=update).
+## El esquema/tablas se crean automáticamente al levantar el backend, ya que está configurado con JPA (ddl-auto=update).
 
 Esto significa:
 
 
 •    No es obligatorio ejecutar scripts DDL para crear tablas.
 
-•    Solo necesitas tener creada la base de datos vacía (por ejemplo: HelpDesk) y
-
-credenciales válidas.
+•    Solo necesitas tener creada la base de datos vacía (por ejemplo: HelpDesk) y credenciales válidas.
 
 •    Al iniciar el backend, se generarán/actualizarán las tablas necesarias.
 
 
 ## 6.2 Inserción de datos iniciales (manual)
 
-## Aunque el backend crea la estructura, para usar el sistema se requiere ingresar datos
-
-iniciales (por ejemplo):
+## Aunque el backend crea la estructura, para usar el sistema se requiere ingresar datos iniciales (por ejemplo):
 
 
 •    Roles (ADMIN, USER u otros que maneje tu app)
@@ -221,9 +215,7 @@ iniciales (por ejemplo):
 
 •    En la carpeta database/ deben estar los scripts DML (insert) con datos iniciales.
 
-•    Ejecuta esos inserts con Azure Data Studio (recomendado) o DBeaver una vez
-
-que el backend haya creado las tablas.
+•    Ejecuta esos inserts con Azure Data Studio (recomendado) o DBeaver una vez que el backend haya creado las tablas.
 
 
 ## Recomendación de flujo
@@ -273,13 +265,11 @@ icate=true
 2. Ejecuta:
 
 
-$env:DB_URL="jdbc:sqlserver://localhost:1433;databaseName=HelpDesk;encrypt=tru
-
-e;trustServerCertificate=true"
+$env:DB_URL="jdbc:sqlserver://localhost:1433;databaseName=HelpDesk;encrypt=true;trustServerCertificate=true"
 
 $env:DB_USERNAME="sa"
 
-$env:DB_PASSWORD="YourStrong!Passw0rd"
+$env:DB_PASSWORD="YourPassword"
 
 $env:JWT_SECRET="cambia-esto-por-un-secreto-largo"
 
@@ -298,13 +288,11 @@ $env:PORT="8081"
 
 export
 
-## DB_URL="jdbc:sqlserver://localhost:1433;databaseName=HelpDesk;encrypt=true;trust
-
-## ServerCertificate=true"
+## DB_URL="jdbc:sqlserver://localhost:1433;databaseName=HelpDesk;encrypt=true;trustServerCertificate=true"
 
 export DB_USERNAME="sa"
 
-export DB_PASSWORD="YourStrong!Passw0rd"
+export DB_PASSWORD="YourPassword"
 
 export JWT_SECRET="cambia-esto-por-un-secreto-largo"
 
@@ -445,13 +433,9 @@ Pasos para registrar en Backstage:
 ## 12. Notas técnicas
 
 
-•    La estructura de tablas se crea automáticamente con JPA (ddl-auto=update) al
+•    La estructura de tablas se crea automáticamente con JPA (ddl-auto=update) al levantar el backend.
 
-levantar el backend.
-
-•    Los datos iniciales (roles/usuarios) deben insertarse manualmente (scripts DML
-
-en database/).
+•    Los datos iniciales (roles/usuarios) deben insertarse manualmente (scripts DML en database/).
 
 •    Si el puerto 8081 está ocupado, se puede cambiar usando PORT (por ejemplo 8082) y actualizar el base URL del frontend.
 
