@@ -1,6 +1,5 @@
 package com.presentacion.helpdesk.dtos;
 
-import com.presentacion.helpdesk.entities.Estado;
 import com.presentacion.helpdesk.entities.Prioridad;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

@@ -1,7 +1,5 @@
 package com.presentacion.helpdesk.dtos;
 
-import jakarta.persistence.Column;
-
 public class HorarioDTO {
     private Long id;
     private String atencion;

@@ -1,5 +1,5 @@
 export const environment = {
     production: true,
-    base: 'https://helpdeskproyect.azurewebsites.net',
-    dom: 'helpdeskproyect.azurewebsites.net'
+    base: 'http://localhost:8081',
+    dom: 'localhost:8081'
   };

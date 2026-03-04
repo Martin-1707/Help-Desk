@@ -1,0 +1,22 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: help-desk
+  title: Help Desk
+  description: Mesa de Ayuda Interna (Angular 18 + Spring Boot 4 + MS SQL Server / Azure SQL)
+  tags:
+    - angular
+    - angular-material
+    - java
+    - spring-boot
+    - spring-security
+    - jwt
+    - sqlserver
+  links:
+    - url: http://localhost:8081/swagger-ui/index.html
+      title: Swagger UI (Local)
+      icon: docs
+spec:
+  type: service
+  lifecycle: experimental
+  owner: user:guest
