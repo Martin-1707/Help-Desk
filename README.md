@@ -3,13 +3,7 @@
 
 ## 1. Descripción
 
-## Help Desk es una aplicación web para registrar y gestionar solicitudes de
-
-soporte (Mesa de Ayuda Interna). Permite crear, listar, ver detalle, editar
-
-solicitudes y cambiar su estado (Nuevo, En Proceso, Resuelto, Cerrado). Incluye
-
-autenticación con JWT, filtros por estado y prioridad, y validaciones.
+Help Desk es una aplicación web para registrar y gestionar solicitudes de soporte (Mesa de Ayuda Interna). Permite crear, listar, ver detalle, editar solicitudes y cambiar su estado (Nuevo, En Proceso, Resuelto, Cerrado). Incluye autenticación con JWT, filtros por estado y prioridad, y validaciones.
 
 ## 2. Tecnologías
 
@@ -227,7 +221,7 @@ Esto significa:
 
 3.   Ejecutar inserts iniciales desde database/ (roles, usuarios, etc.).
 
-## 4.   Backend (Spring Boot)
+4.   Backend (Spring Boot)
 
 
 ## 7.1 Variables de entorno requeridas
@@ -249,9 +243,7 @@ El backend usa variables de entorno para evitar credenciales en el código:
 
 Ejemplo recomendado de DB_URL para SQL Server local:
 
-jdbc:sqlserver://localhost:1433;databaseName=HelpDesk;encrypt=true;trustServerCertif
-
-icate=true
+jdbc:sqlserver://localhost:1433;databaseName=HelpDesk;encrypt=true;trustServerCertificate=true
 
 
 ## 7.2 Configurar variables de entorno
@@ -265,17 +257,17 @@ icate=true
 2. Ejecuta:
 
 
-$env:DB_URL="jdbc:sqlserver://localhost:1433;databaseName=HelpDesk;encrypt=true;trustServerCertificate=true"
-
-$env:DB_USERNAME="sa"
-
-$env:DB_PASSWORD="YourPassword"
-
-$env:JWT_SECRET="cambia-esto-por-un-secreto-largo"
-
-$env:CORS_ALLOWED_ORIGINS="http://localhost:4200"
-
-$env:PORT="8081"
+    $env:DB_URL="jdbc:sqlserver://localhost:1433;databaseName=HelpDesk;encrypt=true;trustServerCertificate=true"
+    
+    $env:DB_USERNAME="sa"
+    
+    $env:DB_PASSWORD="YourPassword"
+    
+    $env:JWT_SECRET="cambia-esto-por-un-secreto-largo"
+    
+    $env:CORS_ALLOWED_ORIGINS="http://localhost:4200"
+    
+    $env:PORT="8081"
 
 
 ## En Linux / macOS (bash/zsh)
@@ -286,19 +278,17 @@ $env:PORT="8081"
 2. Ejecuta:
 
 
-export
-
-## DB_URL="jdbc:sqlserver://localhost:1433;databaseName=HelpDesk;encrypt=true;trustServerCertificate=true"
-
-export DB_USERNAME="sa"
-
-export DB_PASSWORD="YourPassword"
-
-export JWT_SECRET="cambia-esto-por-un-secreto-largo"
-
-export CORS_ALLOWED_ORIGINS="http://localhost:4200"
-
-export PORT="8081"
+    export DB_URL="jdbc:sqlserver://localhost:1433;databaseName=HelpDesk;encrypt=true;trustServerCertificate=true"
+    
+    export DB_USERNAME="sa"
+    
+    export DB_PASSWORD="YourPassword"
+    
+    export JWT_SECRET="cambia-esto-por-un-secreto-largo"
+    
+    export CORS_ALLOWED_ORIGINS="http://localhost:4200"
+    
+    export PORT="8081"
 
 
 ## 7.3 Ejecutar el backend
@@ -307,19 +297,19 @@ export PORT="8081"
 1. Ir a la carpeta backend:
 
 
-cd backend
+    cd backend
 
 
 2. Ejecutar la aplicación:
 
 
-./mvnw spring-boot:run
+    ./mvnw spring-boot:run
 
 
 3. Verificar que la API responde:
 
 
-•   API base: http://localhost:8081
+    •   API base: http://localhost:8081
 
 
 ## 8. Swagger (Documentación de API) Con el backend levantado, la documentación de endpoints está disponible en:
@@ -419,15 +409,15 @@ npm start
 Pasos para registrar en Backstage:
 
 
-## 1.   Ir a Catalog
+1.   Ir a Catalog
 
-## 2.   Seleccionar Register Existing Component
+2.   Seleccionar Register Existing Component
 
-## 3.   Pegar la URL del repositorio GitHub
+3.   Pegar la URL del repositorio GitHub
 
-## 4.   Seleccionar el archivo catalog-info.yaml en la raíz
+4.   Seleccionar el archivo catalog-info.yaml en la raíz
 
-## 5.   Confirmar para que aparezca en el catálogo
+5.   Confirmar para que aparezca en el catálogo
 
 
 ## 12. Notas técnicas
