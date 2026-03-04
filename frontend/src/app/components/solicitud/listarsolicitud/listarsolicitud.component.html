@@ -11,6 +11,35 @@
     </button>
   </div>
 
+
+  <div class="kpis" *ngIf="!isLoading">
+    <div class="kpi">
+      <div class="kpi-label">Total</div>
+      <div class="kpi-value">{{ total() }}</div>
+    </div>
+
+    <div class="kpi">
+      <div class="kpi-label">Nuevas</div>
+      <div class="kpi-value">{{ nuevas() }}</div>
+    </div>
+
+    <div class="kpi">
+      <div class="kpi-label">En proceso</div>
+      <div class="kpi-value">{{ enProceso() }}</div>
+    </div>
+
+    <div class="kpi">
+      <div class="kpi-label">Resueltas</div>
+      <div class="kpi-value">{{ resueltas() }}</div>
+    </div>
+
+    <div class="kpi">
+      <div class="kpi-label">Cerradas</div>
+      <div class="kpi-value">{{ cerradas() }}</div>
+    </div>
+
+  </div>
+
   <mat-card class="card elevation-1">
     <mat-card-header class="filters-header">
       <mat-card-title class="filters-title">
@@ -156,7 +185,7 @@
               <button mat-icon-button matTooltip="Ver detalle" (click)="ver(s.id)">
                 <mat-icon>visibility</mat-icon>
               </button>
-              <button mat-icon-button matTooltip="Editar" (click)="editar(s.id)">
+              <button *ngIf="puedeEditar" mat-icon-button matTooltip="Editar" (click)="editar(s.id)">
                 <mat-icon>edit</mat-icon>
               </button>
             </td>

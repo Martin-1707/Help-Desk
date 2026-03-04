@@ -1,6 +1,7 @@
 package com.presentacion.helpdesk.serviceimplements;
 
 import com.presentacion.helpdesk.dtos.SolicitudCreateUpdateDTO;
+import com.presentacion.helpdesk.dtos.SolucionDTO;
 import com.presentacion.helpdesk.entities.Estado;
 import com.presentacion.helpdesk.entities.Prioridad;
 import com.presentacion.helpdesk.entities.SolicitudSoporte;
@@ -121,7 +122,43 @@ public class SolicitudServiceImplement implements ISolicitudService {
     public List<SolicitudSoporte> search(Estado estado, Prioridad prioridad, String titulo, OffsetDateTime desde, OffsetDateTime hasta) {
         if (titulo != null && titulo.isBlank()) titulo = null;
 
-        return soliRepo.search(estado, prioridad, titulo, desde, hasta);
+        String estadoStr = (estado == null) ? null : estado.name();
+        String prioridadStr = (prioridad == null) ? null : prioridad.name();
+
+        return soliRepo.search(estadoStr, prioridadStr, titulo, desde, hasta);
+    }
+
+    @Override
+    public SolicitudSoporte saveSolucion(Long id, SolucionDTO dto) {
+
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        Usuario auth = usuarioRepo.findWithRolByUsername(username)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado: " + username));
+
+        String rol = auth.getRol().getNombre();
+
+        // Solo OPERADOR (y si quieres ADMIN)
+        if (!"OPERADOR".equalsIgnoreCase(rol) && !"ADMIN".equalsIgnoreCase(rol)) {
+            throw new BusinessRuleException("No tienes permisos para registrar la solución.");
+        }
+
+        SolicitudSoporte s = soliRepo.findById(id)
+                .orElseThrow(() -> new NotFoundException("Solicitud no encontrada con id: " + id));
+
+        // regla: si está CERRADO, no tocar (puedes cambiar esto si quieres permitirlo)
+        if (s.getEstado() == Estado.CERRADO) {
+            throw new BusinessRuleException("No se puede registrar solución en una solicitud CERRADA.");
+        }
+
+        s.setSolucion(dto.getSolucion());
+        s.setFechaResolucion(OffsetDateTime.now());
+
+        // opcional: al registrar solución, pasa a RESUELTO
+        if (s.getEstado() == Estado.NUEVO || s.getEstado() == Estado.EN_PROCESO) {
+            s.setEstado(Estado.RESUELTO);
+        }
+
+        return soliRepo.save(s);
     }
 
 }

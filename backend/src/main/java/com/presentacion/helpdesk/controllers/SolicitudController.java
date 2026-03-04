@@ -2,6 +2,7 @@ package com.presentacion.helpdesk.controllers;
 
 import com.presentacion.helpdesk.dtos.CambiarEstadoDTO;
 import com.presentacion.helpdesk.dtos.SolicitudCreateUpdateDTO;
+import com.presentacion.helpdesk.dtos.SolucionDTO;
 import com.presentacion.helpdesk.entities.Estado;
 import com.presentacion.helpdesk.entities.Prioridad;
 import com.presentacion.helpdesk.entities.SolicitudSoporte;
@@ -25,6 +26,7 @@ public class SolicitudController {
     // LISTAR + FILTRAR (si no envías params, trae todo)
     @GetMapping
     public ResponseEntity<List<SolicitudSoporte>> list(
+
             @RequestParam(required = false) Estado estado,
             @RequestParam(required = false) Prioridad prioridad,
             @RequestParam(required = false) String titulo,
@@ -33,6 +35,7 @@ public class SolicitudController {
             @RequestParam(required = false)
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) OffsetDateTime hasta
     ) {
+
         List<SolicitudSoporte> result = solicitudService.search(estado, prioridad, titulo, desde, hasta);
         return ResponseEntity.ok(result);
     }
@@ -66,6 +69,14 @@ public class SolicitudController {
             @Valid @RequestBody CambiarEstadoDTO dto
     ) {
         return ResponseEntity.ok(solicitudService.changeEstado(id, dto.getEstado()));
+    }
+
+    @PutMapping("/{id}/solucion")
+    public ResponseEntity<SolicitudSoporte> saveSolucion(
+            @PathVariable Long id,
+            @Valid @RequestBody SolucionDTO dto
+    ) {
+        return ResponseEntity.ok(solicitudService.saveSolucion(id, dto));
     }
 
     // ELIMINAR

@@ -181,7 +181,7 @@ h3 {
 
 .row {
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   gap: 12px;
 }
 
@@ -221,4 +221,16 @@ h3 {
   .row button {
     width: 100%;
   }
+}
+.meta-row {
+  margin-top: 12px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: rgba(0, 0, 0, 0.02);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.meta-row .muted {
+  font-size: 12px;
+  margin-bottom: 6px;
 }

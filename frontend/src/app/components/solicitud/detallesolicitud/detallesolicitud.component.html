@@ -108,12 +108,37 @@
         </mat-form-field>
 
         <button mat-flat-button color="primary" type="submit"
-                [disabled]="isLoading || esCerrado || formEstado.invalid || formEstado.value.estado === s.estado">
+          [disabled]="isLoading || esCerrado || formEstado.invalid || formEstado.value.estado === s.estado">
           Guardar Estado
         </button>
       </form>
     </mat-card-content>
   </mat-card>
+
+  <mat-card class="card elevation-1">
+  <mat-card-header class="card-header">
+    <mat-icon class="icon-primary">task_alt</mat-icon>
+    <div class="card-title-wrap">
+      <div class="card-title">Solución</div>
+      <div class="card-subtitle">Solución registrada para esta solicitud</div>
+    </div>
+  </mat-card-header>
+
+  <mat-card-content>
+    <ng-container *ngIf="(solicitud.solucion ?? '').trim().length > 0; else sinSolucion">
+      <div class="desc-box">{{ solicitud.solucion }}</div>
+
+      <div class="meta-row" *ngIf="solicitud.fechaResolucion">
+        <div class="muted">Fecha de Resolución</div>
+        <div>{{ solicitud.fechaResolucion | date:'dd/MM/yyyy HH:mm' }}</div>
+      </div>
+    </ng-container>
+
+    <ng-template #sinSolucion>
+      <div class="muted">Aún no se registró solución.</div>
+    </ng-template>
+  </mat-card-content>
+</mat-card>
 </div>
 
 <div class="loading" *ngIf="isLoading && !solicitud">

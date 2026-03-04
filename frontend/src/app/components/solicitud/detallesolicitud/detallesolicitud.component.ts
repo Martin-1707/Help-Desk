@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 
 import { MatCardModule } from '@angular/material/card';
@@ -19,6 +19,7 @@ import { LoginService } from '../../../services/login.service';
 import { SolicitudSoporte } from '../../../models/solicitud-soporte.model';
 import { Estado } from '../../../models/estado';
 import { Prioridad } from '../../../models/prioridad';
+import { MatInputModule } from '@angular/material/input';
 
 @Component({
   selector: 'app-detallesolicitud',
@@ -59,6 +60,14 @@ export class DetallesolicitudComponent implements OnInit {
 
   formEstado!: FormGroup;
 
+  solucionCtrl = new FormControl('', [
+    Validators.required,
+    Validators.minLength(5),
+    Validators.maxLength(2000),
+  ]);
+
+  savingSolucion = false;
+
   readonly Estado = Estado;
 
   readonly estados: Estado[] = [
@@ -75,7 +84,7 @@ export class DetallesolicitudComponent implements OnInit {
     private solicitudService: SolicitudService,
     private loginService: LoginService,
     private snackBar: MatSnackBar,
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.rolActual = (this.loginService.showRole() ?? '').toUpperCase();
@@ -102,7 +111,7 @@ export class DetallesolicitudComponent implements OnInit {
     this.isLoading = true;
 
     this.solicitudService.getById(this.idSolicitud).subscribe({
-            next: (s) => {
+      next: (s) => {
         this.solicitud = s;
         this.esCerrado = s.estado === Estado.CERRADO;
 

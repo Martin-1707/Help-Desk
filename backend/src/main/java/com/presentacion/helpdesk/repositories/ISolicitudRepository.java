@@ -13,22 +13,22 @@ import java.util.List;
 
 @Repository
 public interface ISolicitudRepository extends JpaRepository<SolicitudSoporte, Long> {
-    @Query("""
-  SELECT s
-  FROM SolicitudSoporte s
-  WHERE (:estado IS NULL OR s.estado = :estado)
-    AND (:prioridad IS NULL OR s.prioridad = :prioridad)
-    AND (:titulo IS NULL OR LOWER(s.titulo) LIKE LOWER(CONCAT('%', :titulo, '%')))
-    AND (:desde IS NULL OR s.fechaActualizacion >= :desde)
-    AND (:hasta IS NULL OR s.fechaCreacion <= :hasta)
-  ORDER BY s.fechaCreacion DESC
-""")
+
+    @Query(value = """
+        SELECT *
+        FROM solicitud_soporte s
+        WHERE (:estado IS NULL OR s.estado = :estado)
+          AND (:prioridad IS NULL OR s.prioridad = :prioridad)
+          AND (:titulo IS NULL OR s.titulo ILIKE CONCAT('%', :titulo, '%'))
+          AND s.fecha_actualizacion >= COALESCE(CAST(:desde AS timestamptz), s.fecha_actualizacion)
+          AND s.fecha_creacion      <= COALESCE(CAST(:hasta AS timestamptz), s.fecha_creacion)
+        ORDER BY s.fecha_creacion DESC
+        """, nativeQuery = true)
     List<SolicitudSoporte> search(
-            @Param("estado") Estado estado,
-            @Param("prioridad") Prioridad prioridad,
+            @Param("estado") String estado,
+            @Param("prioridad") String prioridad,
             @Param("titulo") String titulo,
             @Param("desde") OffsetDateTime desde,
             @Param("hasta") OffsetDateTime hasta
     );
-
 }

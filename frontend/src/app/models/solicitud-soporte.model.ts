@@ -8,7 +8,9 @@ export class SolicitudSoporte {
     descripcion: string = "";
     prioridad: Prioridad = Prioridad.MEDIA;
     estado: Estado = Estado.NUEVO;
-    solicitanteUser: Usuario = new Usuario(); 
-    fechaCreacion: string = "";  
-    fechaActualizacion: string = ""; 
+    solicitanteUser: Usuario = new Usuario();
+    fechaCreacion: string = "";
+    fechaActualizacion: string = "";
+    solucion?: string | null;
+    fechaResolucion?: string | null;
 }

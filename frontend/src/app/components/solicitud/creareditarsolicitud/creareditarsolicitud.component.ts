@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 
 import { MatCardModule } from '@angular/material/card';
@@ -63,12 +63,22 @@ export class CreareditarsolicitudComponent implements OnInit {
 
   private estadoOriginal: Estado = Estado.NUEVO;
 
+  solucionLabel = '';
+  fechaResolucionValue: string | null = null;
+
   usuariosRolUsuario: UsuarioPick[] = [];
 
   readonly estados: Estado[] = [Estado.NUEVO, Estado.EN_PROCESO, Estado.RESUELTO, Estado.CERRADO];
   readonly prioridades: Prioridad[] = [Prioridad.ALTA, Prioridad.MEDIA, Prioridad.BAJA];
 
   form!: FormGroup;
+
+  solucionCtrl = new FormControl('', [
+    Validators.minLength(5),
+    Validators.maxLength(2000),
+  ]);
+
+  savingSolucion = false;
 
   constructor(
     private fb: FormBuilder,
@@ -78,7 +88,7 @@ export class CreareditarsolicitudComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private snackBar: MatSnackBar,
-  ) {}
+  ) { }
 
   ngOnInit(): void {
 
@@ -167,6 +177,31 @@ export class CreareditarsolicitudComponent implements OnInit {
         }
 
         this.isLoading = false;
+
+        const anyS: any = s;
+        const solucion = (anyS.solucion ?? '').toString();
+
+        // setValue primero
+        this.solucionCtrl.setValue(solucion, { emitEvent: false });
+
+        // ✅ también alimenta el label para vista
+        this.solucionLabel = solucion;
+
+        // si tienes fecha en el backend:
+        this.fechaResolucionValue = anyS.fechaResolucion ?? null;
+
+        // ✅ luego reglas
+        const estaCerrado = s.estado === Estado.CERRADO;
+
+        if (this.esVista) {
+          this.solucionCtrl.disable({ emitEvent: false });
+        } else if (!this.esOperador) {
+          this.solucionCtrl.disable({ emitEvent: false });
+        } else if (estaCerrado) {
+          this.solucionCtrl.disable({ emitEvent: false }); // si quieres bloquear en cerrado
+        } else {
+          this.solucionCtrl.enable({ emitEvent: false });  // ✅ operador puede escribir aunque esté vacío
+        }
       },
       error: () => {
         this.isLoading = false;
@@ -176,74 +211,115 @@ export class CreareditarsolicitudComponent implements OnInit {
     });
   }
 
-  guardar(): void {
-    if (this.esVista) return; 
-    if (this.isLoading) return;
+  async guardar(): Promise<void> {
+  if (this.esVista || this.isLoading) return;
 
-    if (this.form.invalid) {
-      this.form.markAllAsTouched();
-      this.snackBar.open('⚠️ Completa los campos correctamente', 'Cerrar', { duration: 3000 });
+  // valida form base
+  if (this.form.invalid) {
+    this.form.markAllAsTouched();
+    this.snackBar.open('⚠️ Completa los campos correctamente', 'Cerrar', { duration: 3000 });
+    return;
+  }
+
+  // valida solución solo si aplica
+  const debeGuardarSolucion =
+    this.modoEdicion &&
+    this.esOperador &&
+    this.form.get('estado')?.value !== Estado.CERRADO; // ajusta si string/enum
+
+  if (debeGuardarSolucion) {
+    const sol = (this.solucionCtrl.value ?? '').trim();
+
+    // si quieres que sea obligatoria para operador en edición, valida así:
+    if (sol.length < 5 || this.solucionCtrl.invalid) {
+      this.solucionCtrl.markAsTouched();
+      this.snackBar.open('⚠️ Escribe una solución válida (mín. 5 caracteres)', 'Cerrar', { duration: 3000 });
       return;
     }
+  }
 
-    const v = this.form.getRawValue();
+  const v = this.form.getRawValue();
 
-    const dto: SolicitudCreateUpdateDTO = {
-      titulo: v.titulo,
-      descripcion: v.descripcion,
-      prioridad: v.prioridad,
-      ...(this.mode === 'create' && this.esOperador ? { solicitanteId: Number(v.solicitanteId) } : {})
-    };
+  const dto: SolicitudCreateUpdateDTO = {
+    titulo: v.titulo,
+    descripcion: v.descripcion,
+    prioridad: v.prioridad,
+    ...(this.mode === 'create' && this.esOperador ? { solicitanteId: Number(v.solicitanteId) } : {})
+  };
 
-    this.isLoading = true;
+  this.isLoading = true;
 
-    // CREATE
-    if (this.mode === 'create') {
-      this.solicitudService.create(dto).subscribe({
-        next: () => {
-          this.isLoading = false;
-          this.snackBar.open('✅ Solicitud creada', 'Cerrar', { duration: 2500 });
-          this.router.navigate(['/solicitudes']);
-        },
-        error: () => {
-          this.isLoading = false;
-          this.snackBar.open('❌ Error al crear la solicitud', 'Cerrar', { duration: 3000 });
-        },
-      });
-      return;
-    }
-
-    // EDIT
-    this.solicitudService.update(this.idSolicitud, dto).subscribe({
+  // CREATE
+  if (this.mode === 'create') {
+    this.solicitudService.create(dto).subscribe({
       next: () => {
-        const estadoNuevo: Estado = v.estado;
-        const cambioEstado = estadoNuevo !== this.estadoOriginal;
+        this.isLoading = false;
+        this.snackBar.open('✅ Solicitud creada', 'Cerrar', { duration: 2500 });
+        this.router.navigate(['/solicitudes']);
+      },
+      error: () => {
+        this.isLoading = false;
+        this.snackBar.open('❌ Error al crear la solicitud', 'Cerrar', { duration: 3000 });
+      },
+    });
+    return;
+  }
 
-        if (!cambioEstado) {
+  // EDIT: update base
+  this.solicitudService.update(this.idSolicitud, dto).subscribe({
+    next: () => {
+      const estadoNuevo: Estado = v.estado;
+      const cambioEstado = estadoNuevo !== this.estadoOriginal;
+
+      const afterEstado = () => {
+        // luego de update + (opcional) changeEstado, guarda solución si aplica
+        if (!debeGuardarSolucion) {
           this.isLoading = false;
           this.snackBar.open('✏️ Solicitud actualizada', 'Cerrar', { duration: 2500 });
           this.router.navigate(['/solicitudes']);
           return;
         }
 
-        this.solicitudService.changeEstado(this.idSolicitud, estadoNuevo).subscribe({
-          next: () => {
+        const solucion = (this.solucionCtrl.value ?? '').trim();
+
+        this.solicitudService.saveSolucion(this.idSolicitud, solucion).subscribe({
+          next: (updated) => {
             this.isLoading = false;
-            this.snackBar.open('✏️ Solicitud actualizada', 'Cerrar', { duration: 2500 });
+            const anyU: any = updated;
+            this.solucionLabel = (anyU.solucion ?? solucion).toString();
+            this.fechaResolucionValue = anyU.fechaResolucion ?? this.fechaResolucionValue;
+
+            this.snackBar.open('✅ Cambios guardados', 'Cerrar', { duration: 2500 });
             this.router.navigate(['/solicitudes']);
           },
           error: () => {
             this.isLoading = false;
-            this.snackBar.open('⚠️ Se actualizó, pero falló el cambio de estado', 'Cerrar', { duration: 3500 });
+            this.snackBar.open('⚠️ Se guardó la solicitud, pero falló guardar la solución', 'Cerrar', { duration: 3500 });
           },
         });
-      },
-      error: () => {
-        this.isLoading = false;
-        this.snackBar.open('❌ Error al actualizar la solicitud', 'Cerrar', { duration: 3000 });
-      },
-    });
-  }
+      };
+
+      if (!cambioEstado) {
+        afterEstado();
+        return;
+      }
+
+      // cambio estado
+      this.solicitudService.changeEstado(this.idSolicitud, estadoNuevo).subscribe({
+        next: () => afterEstado(),
+        error: () => {
+          // aun así intenta guardar solución (o puedes cortar aquí)
+          this.snackBar.open('⚠️ Se actualizó, pero falló el cambio de estado', 'Cerrar', { duration: 3500 });
+          afterEstado();
+        },
+      });
+    },
+    error: () => {
+      this.isLoading = false;
+      this.snackBar.open('❌ Error al actualizar la solicitud', 'Cerrar', { duration: 3000 });
+    },
+  });
+}
 
   cancelar(): void {
     this.router.navigate(['/solicitudes']);
@@ -266,5 +342,46 @@ export class CreareditarsolicitudComponent implements OnInit {
       case Prioridad.BAJA: return 'Baja';
       default: return String(p);
     }
+  }
+
+  guardarSolucion(): void {
+    if (!this.modoEdicion) return;
+    if (!this.esOperador) return;
+
+    if (this.savingSolucion || this.isLoading) return;
+
+    if (this.solucionCtrl.invalid) {
+      this.solucionCtrl.markAsTouched();
+      this.snackBar.open('⚠️ Escribe una solución válida', 'Cerrar', { duration: 2500 });
+      return;
+    }
+
+    const solucion = (this.solucionCtrl.value ?? '').trim();
+    if (solucion.length < 5) {
+      this.solucionCtrl.markAsTouched();
+      this.snackBar.open('⚠️ La solución debe tener mínimo 5 caracteres', 'Cerrar', { duration: 2500 });
+      return;
+    }
+    this.savingSolucion = true;
+
+    this.solicitudService.saveSolucion(this.idSolicitud, solucion).subscribe({
+      next: (updated) => {
+        this.savingSolucion = false;
+        this.snackBar.open('✅ Solución guardada', 'Cerrar', { duration: 2500 });
+
+        const anyU: any = updated;
+        const sol = (anyU.solucion ?? this.solucionCtrl.value ?? '').toString();
+
+        // ✅ refrescar lo mostrado
+        this.solucionLabel = sol;
+        this.solucionCtrl.setValue(sol, { emitEvent: false });
+
+        this.fechaResolucionValue = anyU.fechaResolucion ?? this.fechaResolucionValue;
+      },
+      error: () => {
+        this.savingSolucion = false;
+        this.snackBar.open('❌ No se pudo guardar la solución', 'Cerrar', { duration: 3000 });
+      },
+    });
   }
 }

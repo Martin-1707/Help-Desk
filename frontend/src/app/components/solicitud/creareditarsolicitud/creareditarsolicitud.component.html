@@ -40,18 +40,15 @@
 
         <mat-form-field appearance="outline" class="w-100">
           <mat-label>Descripción *</mat-label>
-          <textarea
-            matInput
-            rows="5"
-            formControlName="descripcion"
-            placeholder="Describe detalladamente el problema o solicitud..."
-          ></textarea>
+          <textarea matInput rows="5" formControlName="descripcion"
+            placeholder="Describe detalladamente el problema o solicitud..."></textarea>
 
           <mat-hint align="start">Mínimo 10 caracteres</mat-hint>
           <mat-hint align="end">{{ form.get('descripcion')?.value?.length || 0 }}/2000</mat-hint>
 
           <mat-error *ngIf="form.get('descripcion')?.hasError('required')">La descripción es obligatoria.</mat-error>
-          <mat-error *ngIf="form.get('descripcion')?.hasError('minlength')">Debe tener al menos 10 caracteres.</mat-error>
+          <mat-error *ngIf="form.get('descripcion')?.hasError('minlength')">Debe tener al menos 10
+            caracteres.</mat-error>
           <mat-error *ngIf="form.get('descripcion')?.hasError('maxlength')">Máximo 2000 caracteres.</mat-error>
         </mat-form-field>
 
@@ -101,6 +98,50 @@
         </div>
 
         <mat-divider class="divider"></mat-divider>
+
+        <!-- Solución (solo en modo edición) -->
+        <div *ngIf="modoEdicion" class="solucion-block">
+          <h3 class="solucion-title">Solución</h3>
+
+          <!-- ✅ Editor solo para operador -->
+          <ng-container
+            *ngIf="esOperador && !esVista && form.get('estado')?.value !== 'CERRADO'; else solucionReadOnly">
+
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>Solución *</mat-label>
+              <textarea matInput rows="4" [formControl]="solucionCtrl"
+                placeholder="Describe la solución aplicada..."></textarea>
+
+              <mat-hint align="start">Mínimo 5 caracteres</mat-hint>
+              <mat-hint align="end">{{ solucionCtrl.value?.length || 0 }}/2000</mat-hint>
+
+              <mat-error *ngIf="solucionCtrl.hasError('minlength')">Debe tener al menos 5 caracteres.</mat-error>
+              <mat-error *ngIf="solucionCtrl.hasError('maxlength')">Máximo 2000 caracteres.</mat-error>
+            </mat-form-field>
+
+            <div class="solucion-meta" *ngIf="fechaResolucionValue">
+              <div class="muted">Fecha de Resolución</div>
+              <div>{{ fechaResolucionValue | date:'dd/MM/yyyy HH:mm' }}</div>
+            </div>
+
+          </ng-container>
+
+          <!-- ✅ Solo lectura -->
+          <ng-template #solucionReadOnly>
+            <ng-container *ngIf="solucionLabel.trim().length > 0; else sinSolucion">
+              <div class="solucion-box">{{ solucionLabel }}</div>
+
+              <div class="solucion-meta" *ngIf="fechaResolucionValue">
+                <div class="muted">Fecha de Resolución</div>
+                <div>{{ fechaResolucionValue | date:'dd/MM/yyyy HH:mm' }}</div>
+              </div>
+            </ng-container>
+
+            <ng-template #sinSolucion>
+              <div class="muted">Aún no se registró solución.</div>
+            </ng-template>
+          </ng-template>
+        </div>
 
         <div class="actions">
           <button mat-flat-button color="primary" type="submit" [disabled]="form.invalid || isLoading">

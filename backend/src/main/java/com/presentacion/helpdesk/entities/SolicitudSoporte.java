@@ -30,11 +30,18 @@ public class SolicitudSoporte {
         @JoinColumn(name = "solicitante_id", nullable = false)
         private Usuario solicitanteUser;
 
+        @Column(name = "solucion", columnDefinition = "text")
+        private String solucion;
+
+
         @Column(name = "fecha_creacion", nullable = false)
         private OffsetDateTime fechaCreacion;
 
         @Column(name = "fecha_actualizacion", nullable = false)
         private OffsetDateTime fechaActualizacion;
+
+        @Column(name = "fecha_resolucion")
+        private OffsetDateTime fechaResolucion;
 
         @PrePersist
         void onCreate() {
@@ -87,4 +94,10 @@ public class SolicitudSoporte {
 
         public OffsetDateTime getFechaActualizacion() { return fechaActualizacion; }
         public void setFechaActualizacion(OffsetDateTime fechaActualizacion) { this.fechaActualizacion = fechaActualizacion; }
+
+        public String getSolucion() { return solucion; }
+        public void setSolucion(String solucion) { this.solucion = solucion; }
+
+        public OffsetDateTime getFechaResolucion() { return fechaResolucion; }
+        public void setFechaResolucion(OffsetDateTime fechaResolucion) { this.fechaResolucion = fechaResolucion; }
     }

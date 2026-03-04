@@ -23,6 +23,7 @@ import { of, debounceTime, distinctUntilChanged, startWith, switchMap, map, catc
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { HorarioService } from '../../../services/horario.service';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { LoginService } from '../../../services/login.service';
 
 type EstadoFiltro = Estado | 'TODOS';
 type PrioridadFiltro = Prioridad | 'TODAS';
@@ -52,6 +53,10 @@ export class ListarsolicitudComponent implements OnInit {
 
   private destroyRef = inject(DestroyRef);
 
+  rolActual = '';
+  esOperador = false; // o “puedeEditar”
+  puedeEditar = false;
+
   isLoading = false;
   displayedColumns = ['id', 'titulo', 'solicitante', 'prioridad', 'estado', 'fechaCreacion', 'fechaActualizacion', 'acciones'];
 
@@ -73,11 +78,30 @@ export class ListarsolicitudComponent implements OnInit {
     return this.all().slice(start, start + this.itemsPerPage);
   });
 
+  readonly total = computed(() => this.all().length);
+
+  readonly nuevas = computed(() =>
+    this.all().filter(s => s.estado === Estado.NUEVO).length
+  );
+
+  readonly enProceso = computed(() =>
+    this.all().filter(s => s.estado === Estado.EN_PROCESO).length
+  );
+
+  readonly resueltas = computed(() =>
+    this.all().filter(s => s.estado === Estado.RESUELTO).length
+  );
+
+  readonly cerradas = computed(() =>
+    this.all().filter(s => s.estado === Estado.CERRADO).length
+  );
+
   constructor(
     private fb: FormBuilder,
     private solicitudService: SolicitudService,
     private router: Router,
     private horarioService: HorarioService,
+    private loginService: LoginService,
   ) { }
 
   ngOnInit(): void {
@@ -88,6 +112,10 @@ export class ListarsolicitudComponent implements OnInit {
       desde: [''],
       hasta: [''],
     });
+
+    this.rolActual = (this.loginService.showRole() ?? '').toUpperCase();
+    this.esOperador = this.rolActual.includes('OPERADOR');
+    this.puedeEditar = this.esOperador; // si solo operador edita
 
     this.form.valueChanges.pipe(
       startWith(this.form.getRawValue()),

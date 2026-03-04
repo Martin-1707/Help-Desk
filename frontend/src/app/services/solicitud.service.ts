@@ -66,6 +66,13 @@ export class SolicitudService {
     return this.http.patch<SolicitudSoporte>(`${this.url}/${id}/estado`, { estado });
   }
 
+  saveSolucion(id: number, solucion: string) {
+    return this.http.put<SolicitudSoporte>(
+      `${this.url}/${id}/solucion`,
+      { solucion }
+    );
+  }
+
   getList() { return this.listaCambio.asObservable(); }
   setList(listaNueva: SolicitudSoporte[]) { this.listaCambio.next(listaNueva); }
 }

@@ -171,3 +171,48 @@ h1{
   .results{ margin-left:0; }
   .td-title{ max-width: 240px; }
 }
+.kpis{
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 12px;
+  margin: 12px 0 16px;
+}
+
+.kpi{
+  background: #fff; /* ✅ más vivo */
+  border: 1px solid rgba(0,0,0,.08);
+  border-radius: 14px;
+  padding: 12px 14px;
+  box-shadow: 0 1px 2px rgba(0,0,0,.06);
+  position: relative;
+  overflow: hidden;
+}
+
+/* línea de acento arriba (sutil) */
+.kpi::before{
+  content:"";
+  position:absolute;
+  left:0;
+  top:0;
+  height:3px;
+  width:100%;
+  background: var(--primary);
+  opacity: .35; /* ✅ sutil */
+}
+
+.kpi-label{
+  font-size: 12px;
+  color: rgba(0,0,0,.60);
+  margin-bottom: 6px;
+}
+
+.kpi-value{
+  font-size: 26px; /* un poco más */
+  font-weight: 800;
+  line-height: 1;
+  color: rgba(0,0,0,.86);
+}
+
+@media (max-width: 900px){
+  .kpis{ grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
