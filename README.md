@@ -403,7 +403,7 @@ npm start
 ## 11. Backstage (Software Catalog)
 
 
-## Este repositorio incluye catalog-info.yaml para registrarlo como componente en Backstage.
+Este repositorio incluye catalog-info.yaml para registrarlo como componente en Backstage.
 
 
 Pasos para registrar en Backstage:
